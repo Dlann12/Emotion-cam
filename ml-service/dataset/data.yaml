@@ -1,0 +1,10 @@
+path: /home/kerja/Documents/Project Of Me/Emtion Cam Detection/ml-service/dataset
+train: images/train
+val: images/val
+
+names:
+  0: angry
+  1: fear
+  2: happy
+  3: sad
+  4: surprise

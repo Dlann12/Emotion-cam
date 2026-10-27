@@ -1,0 +1,8 @@
+
+# Python virtual environments
+ml-service/venv/
+**/.venv/
+**/venv/
+
+# Large datasets
+ml-service/dataset/raw/human-face-emotions.zip

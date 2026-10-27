@@ -1,0 +1,69 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                String             @id @default(uuid())
+  email             String             @unique
+  password          String
+  name              String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  emotionDetections EmotionDetection[]
+  memories          Memory[]
+  userPreference    UserPreference?
+  privacySetting    PrivacySetting?
+}
+
+model EmotionDetection {
+  id            String         @id @default(uuid())
+  userId        String
+  imageUrl      String?
+  emotion       String
+  confidence    Float
+  bbox          String         // JSON string array [x,y,w,h]
+  createdAt     DateTime       @default(now())
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emotionScores EmotionScore[]
+  memories      Memory[]
+}
+
+model EmotionScore {
+  id                 String           @id @default(uuid())
+  emotionDetectionId String
+  emotion            String
+  score              Float
+  emotionDetection   EmotionDetection @relation(fields: [emotionDetectionId], references: [id], onDelete: Cascade)
+}
+
+model Memory {
+  id                 String           @id @default(uuid())
+  userId             String
+  emotionDetectionId String
+  title              String
+  description        String?
+  imageUrl           String
+  createdAt          DateTime         @default(now())
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emotionDetection   EmotionDetection @relation(fields: [emotionDetectionId], references: [id], onDelete: Cascade)
+}
+
+model UserPreference {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PrivacySetting {
+  id                  String  @id @default(uuid())
+  userId              String  @unique
+  saveFaceImages      Boolean @default(true)
+  saveHistory         Boolean @default(true)
+  dataUsageConsent    Boolean @default(false)
+  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
